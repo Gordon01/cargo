@@ -18,7 +18,7 @@ pub use self::into_url::IntoUrl;
 pub use self::into_url_with_base::IntoUrlWithBase;
 pub(crate) use self::io::LimitErrorReader;
 pub use self::lockserver::{LockServer, LockServerClient, LockServerStarted};
-pub use self::progress::{Progress, ProgressStyle};
+pub use self::progress::{Progress, ProgressStyle, TaskbarProgress};
 pub use self::queue::Queue;
 pub use self::rustc::Rustc;
 pub use self::semver_ext::{OptVersionReq, VersionExt};

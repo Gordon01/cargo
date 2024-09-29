@@ -28,6 +28,7 @@ fn main() {
         }
     };
 
+    let _ = ctrlc::set();
     let result = if let Some(lock_addr) = cargo::ops::fix_get_proxy_lock_addr() {
         cargo::ops::fix_exec_rustc(&gctx, &lock_addr).map_err(|e| CliError::from(e))
     } else {
@@ -38,6 +39,29 @@ fn main() {
     match result {
         Err(e) => cargo::exit_with_error(e, &mut *gctx.shell()),
         Ok(()) => {}
+    }
+}
+
+#[cfg(windows)]
+mod ctrlc {
+    use super::ProcessError;
+    use anyhow::Result;
+    use cargo::util::TaskbarProgress;
+    use windows_sys::Win32::Foundation::{BOOL, FALSE, TRUE};
+    use windows_sys::Win32::System::Console::SetConsoleCtrlHandler;
+
+    unsafe extern "system" fn ctrlc_handler(_: u32) -> BOOL {
+        eprintln!("{}", TaskbarProgress::None);
+        std::process::exit(0);
+    }
+
+    pub fn set() -> Result<()> {
+        unsafe {
+            if SetConsoleCtrlHandler(Some(ctrlc_handler), TRUE) == FALSE {
+                return Err(ProcessError::new("Could not set Ctrl-C handler.", None, None).into());
+            }
+        }
+        Ok(())
     }
 }
 

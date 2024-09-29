@@ -76,7 +76,7 @@ struct Format {
     max_print: usize,
 }
 
-enum TaskbarProgress {
+pub enum TaskbarProgress {
     None,
     Value(u8),
     Error,
