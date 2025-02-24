@@ -66,7 +66,7 @@ fn default_shows_progress() {
             ".cargo/config.toml",
             r#"
             [term]
-            progress = { width = 60 }
+            progress = { width = 100 }
             "#,
         )
         .file(
@@ -87,8 +87,8 @@ fn default_shows_progress() {
         .build();
 
     p.cargo("build")
-        .without_status()
         .with_stderr_contains("[BUILDING] [====================>        ] 3/4: foo     ")
+        .without_status()
         .run();
 }
 
