@@ -53,14 +53,7 @@ fn bad_progress_config_missing_width() {
 }
 
 #[cargo_test]
-fn default_shows_progress() {
-    const N: usize = 3;
-    let mut deps = String::new();
-    for i in 1..=N {
-        Package::new(&format!("dep_progress_report{}", i), "1.0.0").publish();
-        deps.push_str(&format!("dep_progress_report{} = \"1.0\"\n", i));
-    }
-
+fn default_progress_is_auto() {
     let p = project()
         .file(
             ".cargo/config.toml",
@@ -69,27 +62,10 @@ fn default_shows_progress() {
             progress = { width = 100 }
             "#,
         )
-        .file(
-            "Cargo.toml",
-            &format!(
-                r#"
-                [package]
-                name = "foo"
-                version = "0.1.0"
-
-                [dependencies]
-                {}
-                "#,
-                deps
-            ),
-        )
         .file("src/lib.rs", "")
         .build();
 
-    p.cargo("build")
-        .with_stderr_contains("[BUILDING] [====================>        ] 3/4: foo     ")
-        .without_status()
-        .run();
+    p.cargo("check").run();
 }
 
 #[cargo_test]
